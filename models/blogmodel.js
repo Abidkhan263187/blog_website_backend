@@ -5,6 +5,7 @@ const blogSchema = new mongoose.Schema({
    title:{type:String, required:true},
    type:{type:String, required:true},
    content:{type:String, required:true},
+   userID:{type:String}
 }
 , { timestamps: true })
 

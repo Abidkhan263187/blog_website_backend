@@ -14,27 +14,9 @@ app.use(cors({
     origin: '*'
   })) 
 
-
-  app.get('/',async(req,res )=>{
-    try {
-        const blogList= await blogModel.find(req.query)
-        res.status(200).json(blogList)
-    } catch (error) {
-        res.status(404).json({mssg:"error",error})
-    }
-  })
-
-
   app.use('/blog',blogUserRouter)
 
   app.use('/user',userRouter)
-
-
-
-
-
-
-
 
 app.listen(process.env.PORT, async()=>{
     try {

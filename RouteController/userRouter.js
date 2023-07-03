@@ -1,4 +1,6 @@
 const {Router}=require("express");
+const jwt = require('jsonwebtoken');
+
 const { blogUserModel } = require("../models/blogUserModel");
 
 
@@ -24,11 +26,18 @@ const {name,email,password}=req.body;
 
 userRouter.post('/login', async(req,res)=>{
     const {email,password}=req.body;
-
+    const user= await  blogUserModel.findOne({email:email,password:password});
     try {
-        const verify= await  blogUserModel.findOne({email:email})
-        res.status(200).json({"mssg":"successfully login",verify})
-        console.log(verify)
+        const token = jwt.sign({userID: user._id }, process.env.SECRET);
+
+        if(token){
+            
+            res.status(200).json({"mssg":"successfully login",token})
+        } else{
+            res.status(403).json({"mssg":"failed to login"})
+        }
+       
+        console.log(user)
     } catch (error) {
         res.status(404).json({"mssg":"user not found"})
         console.log(error)
