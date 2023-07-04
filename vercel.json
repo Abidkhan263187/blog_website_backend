@@ -1,15 +1,16 @@
 {
     "version": 2,
+    "name":"blog_application",
     "builds": [
       {
-        "src": "./index.js",
+        "src": "index.js",
         "use": "@now/node"
       }
     ],
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "./index.js"
+        "dest": "index.js"
       }
     ]
   }
