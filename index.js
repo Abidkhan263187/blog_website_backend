@@ -13,7 +13,9 @@ app.use(express.json())
 app.use(cors({
     origin: '*'
   })) 
-
+app.get('/', (req, res) => {
+    res.status(200).json({"mssg":"complete"})
+})
   app.use('/blog',blogUserRouter)
 
   app.use('/user',userRouter)
