@@ -68,7 +68,7 @@ blogUserRouter.get('/dashboard', authenticate, async (req, res) => {
   const { sortBy, order, type, page, limit } = req.query
 
   const currPage = parseInt(page || 1);
-  const currLimit = parseInt(limit || 3);
+  const currLimit = parseInt(limit || 4);
   const skip = (currPage - 1) * currLimit;
   try {
     let blogList
