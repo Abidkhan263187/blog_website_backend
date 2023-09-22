@@ -35,14 +35,15 @@ try {
 }
 
 })
-
+ 
 tourismReg.post('/login',async( req,res)=>{
     const {email,password}  = req.body
     try {
         const user=    await tourismUsers.findOne({email: email, password: password})
+        // console.log(user)
         if(user){
             const token = jwt.sign({email:email}, process.env.SECRET);
-            res.status(200).json({status:"success",token: token})
+            res.status(200).json({status:"success",token: token,user:user})
         }else{
             res.status(500).json({status:"wrong",error: "Credentials not found"})
         }
