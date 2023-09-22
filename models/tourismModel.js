@@ -7,4 +7,16 @@ const tourSchema=new mongoose.Schema({
 })
 const tourModel=mongoose.model('tourism',tourSchema)
 
-module.exports={tourModel}
+
+const tourismUSerScehma= new mongoose.Schema({
+    firstName:{type:String,required:true},
+    lastName:{type:String,required:true},
+    email:{type:String,required:true},
+    mobileNo:{type:String,required:true},
+    password:{type:String,required:true},
+    confirmPassword:{type:String,required:true},
+})
+
+const tourismUsers= mongoose.model('tourismUser',tourismUSerScehma)
+
+module.exports={tourModel,tourismUsers}

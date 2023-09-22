@@ -6,6 +6,7 @@ const { blogModel } = require('./models/blogmodel');
 const { blogUserRouter } = require('./RouteController/blogUser');
 const { userRouter } = require('./RouteController/userRouter');
 const { tourismRouter } = require('./RouteController/tourism');
+const { tourismReg } = require('./RouteController/tourismUser');
 
 
 
@@ -27,6 +28,8 @@ app.get('/', (req, res) => {
   app.use('/user',userRouter)
 
   app.use('/tourism',tourismRouter)
+  app.use('/touismReg',tourismReg)
+  
 
   
 

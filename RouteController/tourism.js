@@ -57,7 +57,7 @@ tourismRouter.get('/', async (req, res) => {
       data = await tourModel.find(req.query);
     }
 
-    console.log(data);
+    // console.log(data);
     res.send({ mssg: "Data retrieved successfully", data: data });
   } catch (error) {
     console.error(error);
