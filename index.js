@@ -7,6 +7,7 @@ const { blogUserRouter } = require('./RouteController/blogUser');
 const { userRouter } = require('./RouteController/userRouter');
 const { tourismRouter } = require('./RouteController/tourism');
 const { tourismReg } = require('./RouteController/tourismUser');
+const { forgotPass } = require('./RouteController/forgotPassowrd');
 
 
 
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
 
   app.use('/tourism',tourismRouter)
   app.use('/touismReg',tourismReg)
+  app.use('/password',forgotPass)
   
 
   

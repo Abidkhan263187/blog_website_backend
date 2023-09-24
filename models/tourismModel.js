@@ -15,6 +15,7 @@ const tourismUSerScehma= new mongoose.Schema({
     mobileNo:{type:String,required:true},
     password:{type:String,required:true},
     confirmPassword:{type:String,required:true},
+    token:{type:String,default:''}
 })
 
 const tourismUsers= mongoose.model('tourismUser',tourismUSerScehma)
