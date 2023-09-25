@@ -13,11 +13,12 @@ forgotPass.post('/forgot', async (req, res) => {
         const { email } = req.body;                         
         const user = await tourismUsers.findOne({ email });
         if (user) {
-            console.log("found,user", user);
+            console.log("found,user");
             const token = jwt.sign({ userId: user._id }, process.env.SECRET);
             const data = await tourismUsers.updateOne({ email: email }, { $set: { token: token } });
             sendResetPasswordMail(email, token)  // here email is the gmail where you got reset link
             res.status(200).json({ message: 'Password reset email sent, please check your mail',token:token });
+            console.log("after")
 
         } else {
             return res.status(404).json({ error: 'User not found' });
