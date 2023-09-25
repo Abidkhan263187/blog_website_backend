@@ -17,7 +17,7 @@ forgotPass.post('/forgot', async (req, res) => {
             const token = jwt.sign({ userId: user._id }, process.env.SECRET);
             const data = await tourismUsers.updateOne({ email: email }, { $set: { token: token } });
             sendResetPasswordMail(email, token)  // here email is the gmail where you got reset link
-            res.status(200).json({ message: 'Password reset email sent, please check your mail' });
+            res.status(200).json({ message: 'Password reset email sent, please check your mail',token:token });
 
         } else {
             return res.status(404).json({ error: 'User not found' });
@@ -51,7 +51,7 @@ const sendResetPasswordMail = async (email, token) => {
             subject: 'Email reset Password',
             html:
                 '<p>Please copy following link to reset your email password:</p>' +
-                '<a href="http://localhost:5500/reset?token=' + token + '"> click here </a>'
+                '<a href="http://localhost:3000/resetPassword"> click here </a>'
         };
 
         transporter.sendMail(mailOptions, function (error, info) {
@@ -72,28 +72,33 @@ const sendResetPasswordMail = async (email, token) => {
 
 
 
-forgotPass.get('/reset', async (req, res) => {
+forgotPass.post('/reset', async (req, res) => {
     try {
         const { token } = req.query;
-        const user = await tourismUsers.findOne({ token: token });
-
-        if (user) {
-            console.log("user mila");
+        console.log("token =>", token)
+        if(token !== ""){
+            const user = await tourismUsers.findOne({ token: token });
             const { password,confirmPassword } = req.body;
-            console.log(password)
-            // const hash = bcrypt.hashSync(password, 8);
-            console.log("hashpass")
-            const updatedData = await tourismUsers.findByIdAndUpdate(
-                { _id: user._id },
-                { $set: { password: password,confirmPassword:confirmPassword, token: '' } },
-                { new: true }
-            );
-            console.log(updatedData)
-            res.status(200).json({ mssg: "Password reset successfully", data: updatedData });
+            if (user) {
+                console.log("user mila");
+             
+                console.log(password)
+                // const hash = bcrypt.hashSync(password, 8);
+                console.log("hashpass")
+                const updatedData = await tourismUsers.findByIdAndUpdate(
+                    { _id: user._id },
+                    { $set: { password: password,confirmPassword:confirmPassword, token: '' } },
+                    { new: true }
+                );
+                console.log(updatedData)
+                res.status(200).json({ mssg: "Password reset successfully", data: updatedData });
+            }
         } else {
             console.log("user nhi mila");
             res.status(200).json({ mssg: "this link has been expired" });
         }
+       
+       
     } catch (error) {
         res.status(404).json({ mssg: "error while resetting", error });
     }
