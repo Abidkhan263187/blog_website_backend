@@ -1,23 +1,23 @@
-const {Router}=require('express')
+const { Router } = require('express')
 const jwt = require('jsonwebtoken');
 const { tourismUsers } = require('../models/tourismModel');
 const nodemailer = require('nodemailer');
-const forgotPass=Router()
+const forgotPass = Router()
 const bcrypt = require('bcrypt');
-forgotPass.get('/forgot',(req,res)=>{
+forgotPass.get('/forgot', (req, res) => {
     res.send("hi from password")
 })
 
 forgotPass.post('/forgot', async (req, res) => {
     try {
-        const { email } = req.body;                         
+        const { email } = req.body;
         const user = await tourismUsers.findOne({ email });
         if (user) {
             console.log("found,user");
             const token = jwt.sign({ userId: user._id }, process.env.SECRET);
             const data = await tourismUsers.updateOne({ email: email }, { $set: { token: token } });
             sendResetPasswordMail(email, token)  // here email is the gmail where you got reset link
-            res.status(200).json({ message: 'Password reset email sent, please check your mail',token:token });
+            res.status(200).json({ message: 'Password reset email sent, please check your mail', token: token });
             console.log("after")
 
         } else {
@@ -32,14 +32,47 @@ forgotPass.post('/forgot', async (req, res) => {
 
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> reset mail function  >>>>>>>>>>>>>>>>>>>>>>>>
-const sendResetPasswordMail = async (email, token) => {
+// const sendResetPasswordMail = async (email) => {
+//     try {
+//         const transporter = nodemailer.createTransport({
+//             service: 'gmail',
+//             host: 'smtp.gmail.com',
+//             port: 465,
+//             secure: false,
+
+//             auth: {
+//                 user: 'nkanko8@gmail.com',
+//                 pass: 'nhgklvkctjrzwxmb',
+//             },
+//         });
+//         console.log(email)
+//         const mailOptions = {
+//             from: 'nkanko8@gmail.com',
+//             to: email,
+//             subject: 'Email reset Password',
+//             html:
+//                 '<p>Please copy following link to reset your email password:</p>' +
+//                 '<a href="http://localhost:3000/resetPassword"> click here </a>'
+//         };
+
+//         transporter.sendMail(mailOptions, function (error, info) {
+//             if (error) {
+//                 console.log('Error in sending email  ' + error);
+//                 return true;
+//             } else {
+//                 console.log('Email sent: ' + info.response);
+//                 return false;
+//             }
+//         });
+//     } catch (error) {
+//         console.log(error)
+//         res.status(404).json({ message: "Error" })
+//     }
+// }
+const sendResetPasswordMail = async (email) => {
     try {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: false,
-
             auth: {
                 user: 'nkanko8@gmail.com',
                 pass: 'nhgklvkctjrzwxmb',
@@ -50,25 +83,26 @@ const sendResetPasswordMail = async (email, token) => {
             from: 'nkanko8@gmail.com',
             to: email,
             subject: 'Email reset Password',
-            html:
-                '<p>Please copy following link to reset your email password:</p>' +
-                '<a href="http://localhost:3000/resetPassword"> click here </a>'
+            html: `
+                <p>Please click the following link to reset your password:</p>
+                <a href="http://localhost:3000/resetPassword">Reset Password</a>
+            `,
         };
 
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
-                console.log('Error in sending email  ' + error);
-                return true;
+                console.error('Error in sending email:', error);
+                // Handle the error appropriately (e.g., return an error response)
             } else {
-                console.log('Email sent: ' + info.response);
-                return false;
+                console.log('Email sent:', info.response);
+                // Email sent successfully
             }
         });
     } catch (error) {
-        console.log(error)
-        res.status(404).json({ message: "Error" })
+        console.error(error);
+        // Handle other errors (e.g., return an error response)
     }
-}
+};
 
 
 
@@ -77,18 +111,18 @@ forgotPass.post('/reset', async (req, res) => {
     try {
         const { token } = req.query;
         console.log("token =>", token)
-        if(token !== ""){
+        if (token !== "") {
             const user = await tourismUsers.findOne({ token: token });
-            const { password,confirmPassword } = req.body;
+            const { password, confirmPassword } = req.body;
             if (user) {
                 console.log("user mila");
-             
+
                 console.log(password)
                 // const hash = bcrypt.hashSync(password, 8);
                 console.log("hashpass")
                 const updatedData = await tourismUsers.findByIdAndUpdate(
                     { _id: user._id },
-                    { $set: { password: password,confirmPassword:confirmPassword, token: '' } },
+                    { $set: { password: password, confirmPassword: confirmPassword, token: '' } },
                     { new: true }
                 );
                 console.log(updatedData)
@@ -98,12 +132,12 @@ forgotPass.post('/reset', async (req, res) => {
             console.log("user nhi mila");
             res.status(200).json({ mssg: "this link has been expired" });
         }
-       
-       
+
+
     } catch (error) {
         res.status(404).json({ mssg: "error while resetting", error });
     }
 });
 
 
-module.exports ={forgotPass}
+module.exports = { forgotPass }
