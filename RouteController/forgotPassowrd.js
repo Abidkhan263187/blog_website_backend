@@ -32,77 +32,44 @@ forgotPass.post('/forgot', async (req, res) => {
 
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> reset mail function  >>>>>>>>>>>>>>>>>>>>>>>>
-// const sendResetPasswordMail = async (email) => {
-//     try {
-//         const transporter = nodemailer.createTransport({
-//             service: 'gmail',
-//             host: 'smtp.gmail.com',
-//             port: 465,
-//             secure: false,
-
-//             auth: {
-//                 user: 'nkanko8@gmail.com',
-//                 pass: 'nhgklvkctjrzwxmb',
-//             },
-//         });
-//         console.log(email)
-//         const mailOptions = {
-//             from: 'nkanko8@gmail.com',
-//             to: email,
-//             subject: 'Email reset Password',
-//             html:
-//                 '<p>Please copy following link to reset your email password:</p>' +
-//                 '<a href="http://localhost:3000/resetPassword"> click here </a>'
-//         };
-
-//         transporter.sendMail(mailOptions, function (error, info) {
-//             if (error) {
-//                 console.log('Error in sending email  ' + error);
-//                 return true;
-//             } else {
-//                 console.log('Email sent: ' + info.response);
-//                 return false;
-//             }
-//         });
-//     } catch (error) {
-//         console.log(error)
-//         res.status(404).json({ message: "Error" })
-//     }
-// }
 const sendResetPasswordMail = async (email) => {
     try {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+
             auth: {
                 user: 'nkanko8@gmail.com',
                 pass: 'nhgklvkctjrzwxmb',
             },
         });
-
+     
         const mailOptions = {
             from: 'nkanko8@gmail.com',
             to: email,
             subject: 'Email reset Password',
-            html: `
-                <p>Please click the following link to reset your password:</p>
-                <a href="http://localhost:3000/resetPassword">Reset Password</a>
-            `,
+            html:
+                '<p>Please copy following link to reset your email password:</p>' +
+                '<a href="http://localhost:3000/resetPassword"> click here </a>'
         };
 
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
-                console.error('Error in sending email:', error);
-                // Handle the error appropriately (e.g., return an error response)
+                console.log('Error in sending email  ' + error);
+                return true;
             } else {
-                console.log('Email sent:', info.response);
-                // Email sent successfully
+                console.log('Email sent: ' + info.response);
+                return false;
             }
         });
     } catch (error) {
-        console.error(error);
-        // Handle other errors (e.g., return an error response)
+        console.log(error)
+        res.status(404).json({ message: "Error" })
     }
-};
+}
+
 
 
 
